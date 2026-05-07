@@ -519,40 +519,57 @@ footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 6
       </div>
       <div class="contact-form">
         <div class="cf-title">お問い合わせ<span class="grad-text">フォーム</span></div>
-        <div class="f-row">
-          <div class="f-grp"><label class="f-lbl">お名前<span class="f-req">*</span></label><input type="text" class="f-inp" placeholder="山田 太郎"></div>
-          <div class="f-grp"><label class="f-lbl">会社名・屋号</label><input type="text" class="f-inp" placeholder="株式会社〇〇 / 個人"></div>
+
+        <!-- 送信完了メッセージ（初期非表示） -->
+        <div id="formSuccess" style="display:none; text-align:center; padding:48px 24px;">
+          <div style="font-size:64px; margin-bottom:20px;">✅</div>
+          <div style="font-size:20px; font-weight:800; color:var(--white); margin-bottom:12px;">送信が完了しました！</div>
+          <div style="font-size:14px; color:var(--text2); line-height:1.8; margin-bottom:28px;">お問い合わせありがとうございます。<br>通常24時間以内にご返信いたします。</div>
+          <button onclick="resetForm()" style="font-size:13px;font-weight:600;color:var(--blue);background:rgba(79,142,247,0.1);border:1.5px solid rgba(79,142,247,0.3);padding:10px 24px;border-radius:50px;cursor:pointer;font-family:'Inter',sans-serif;">別のお問い合わせをする</button>
         </div>
-        <div class="f-grp"><label class="f-lbl">メールアドレス<span class="f-req">*</span></label><input type="email" class="f-inp" placeholder="example@email.com"></div>
-        <div class="f-grp">
-          <label class="f-lbl">ご希望プラン</label>
-          <select class="f-sel" id="planSelect">
-            <option value="">選択してください（任意）</option>
-            <option value="ライトプラン（¥30,000〜）">ライトプラン（¥30,000〜）</option>
-            <option value="スタンダードプラン（¥80,000〜）">スタンダードプラン（¥80,000〜）</option>
-            <option value="プレミアムプラン（¥150,000〜）">プレミアムプラン（¥150,000〜）</option>
-            <option value="プランは相談して決めたい">プランは相談して決めたい</option>
-          </select>
+
+        <!-- 送信エラーメッセージ（初期非表示） -->
+        <div id="formError" style="display:none; background:rgba(239,68,68,0.08); border:1.5px solid rgba(239,68,68,0.25); border-radius:12px; padding:16px 20px; margin-bottom:20px; font-size:13px; color:#fca5a5; line-height:1.7;">
+          ⚠️ 送信に失敗しました。お手数ですが <strong>fonia0620@gmail.com</strong> まで直接ご連絡ください。
         </div>
-        <div class="f-grp">
-          <label class="f-lbl">ご依頼の種別<span class="f-req">*</span></label>
-          <select class="f-sel">
-            <option value="">選択してください</option>
-            <option>Webサイト制作（LP）</option>
-            <option>Webサイト制作（複数ページ）</option>
-            <option>GAS / 業務自動化ツール開発</option>
-            <option>既存サイトの修正・改善</option>
-            <option>料金・納期の確認</option>
-            <option>その他</option>
-          </select>
-        </div>
-        <div class="f-row">
-          <div class="f-grp"><label class="f-lbl">ご予算</label><select class="f-sel"><option value="">選択してください</option><option>〜¥50,000</option><option>¥50,000〜¥100,000</option><option>¥100,000〜¥200,000</option><option>¥200,000以上</option><option>相談して決めたい</option></select></div>
-          <div class="f-grp"><label class="f-lbl">ご希望納期</label><input type="text" class="f-inp" placeholder="例：6月末まで / 急ぎ"></div>
-        </div>
-        <div class="f-grp"><label class="f-lbl">ご依頼の詳細<span class="f-req">*</span></label><textarea class="f-ta" placeholder="作りたいサイトのイメージ・参考サイト・業種など、できるだけ詳しくご記入ください"></textarea></div>
-        <button class="f-btn">送信する ✦</button>
-        <p class="f-note">通常24時間以内にご返信します。</p>
+
+        <!-- フォーム本体 -->
+        <form id="contactForm">
+          <div class="f-row">
+            <div class="f-grp"><label class="f-lbl">お名前<span class="f-req">*</span></label><input type="text" name="name" class="f-inp" placeholder="山田 太郎" required></div>
+            <div class="f-grp"><label class="f-lbl">会社名・屋号</label><input type="text" name="company" class="f-inp" placeholder="株式会社〇〇 / 個人"></div>
+          </div>
+          <div class="f-grp"><label class="f-lbl">メールアドレス<span class="f-req">*</span></label><input type="email" name="email" class="f-inp" placeholder="example@email.com" required></div>
+          <div class="f-grp">
+            <label class="f-lbl">ご希望プラン</label>
+            <select name="plan" class="f-sel" id="planSelect">
+              <option value="">選択してください（任意）</option>
+              <option value="ライトプラン（¥30,000〜）">ライトプラン（¥30,000〜）</option>
+              <option value="スタンダードプラン（¥80,000〜）">スタンダードプラン（¥80,000〜）</option>
+              <option value="プレミアムプラン（¥150,000〜）">プレミアムプラン（¥150,000〜）</option>
+              <option value="プランは相談して決めたい">プランは相談して決めたい</option>
+            </select>
+          </div>
+          <div class="f-grp">
+            <label class="f-lbl">ご依頼の種別<span class="f-req">*</span></label>
+            <select name="type" class="f-sel" required>
+              <option value="">選択してください</option>
+              <option>Webサイト制作（LP）</option>
+              <option>Webサイト制作（複数ページ）</option>
+              <option>GAS / 業務自動化ツール開発</option>
+              <option>既存サイトの修正・改善</option>
+              <option>料金・納期の確認</option>
+              <option>その他</option>
+            </select>
+          </div>
+          <div class="f-row">
+            <div class="f-grp"><label class="f-lbl">ご予算</label><select name="budget" class="f-sel"><option value="">選択してください</option><option>〜¥50,000</option><option>¥50,000〜¥100,000</option><option>¥100,000〜¥200,000</option><option>¥200,000以上</option><option>相談して決めたい</option></select></div>
+            <div class="f-grp"><label class="f-lbl">ご希望納期</label><input type="text" name="deadline" class="f-inp" placeholder="例：6月末まで / 急ぎ"></div>
+          </div>
+          <div class="f-grp"><label class="f-lbl">ご依頼の詳細<span class="f-req">*</span></label><textarea name="message" class="f-ta" placeholder="作りたいサイトのイメージ・参考サイト・業種など、できるだけ詳しくご記入ください" required></textarea></div>
+          <button type="submit" class="f-btn" id="submitBtn">送信する ✦</button>
+          <p class="f-note">通常24時間以内にご返信します。</p>
+        </form>
       </div>
     </div>
   </div>
@@ -816,7 +833,56 @@ function initPage(t) {
   }, 200);
 }
 
-// ─── CURSOR ───
+// ─── CONTACT FORM SUBMISSION ───
+// Formspree セットアップ手順:
+const FORMSPREE_ID = 'xbdwayrp';
+
+document.getElementById('contactForm')?.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const errEl = document.getElementById('formError');
+  errEl.style.display = 'none';
+
+  // ボタンをローディング状態に
+  btn.disabled = true;
+  btn.textContent = '送信中...';
+  btn.style.opacity = '0.7';
+
+  const formData = new FormData(this);
+
+  try {
+    const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+      method: 'POST',
+      body: formData,
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (res.ok) {
+      // 成功
+      document.getElementById('contactForm').style.display = 'none';
+      document.getElementById('formSuccess').style.display = 'block';
+    } else {
+      throw new Error('送信失敗');
+    }
+  } catch (err) {
+    // エラー表示
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = '送信する ✦';
+    btn.style.opacity = '1';
+  }
+});
+
+function resetForm() {
+  document.getElementById('contactForm').reset();
+  document.getElementById('contactForm').style.display = 'block';
+  document.getElementById('formSuccess').style.display = 'none';
+  document.getElementById('formError').style.display = 'none';
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = false;
+  btn.textContent = '送信する ✦';
+  btn.style.opacity = '1';
+}
 const cur = document.getElementById('cur'), curR = document.getElementById('curR');
 let mx = 0, my = 0, rx = 0, ry = 0;
 document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
