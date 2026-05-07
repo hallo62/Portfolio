@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio｜Webデザイナー × フロントエンド</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg:     #080b14;
+  --bg2:    #0d1120;
+  --bg3:    #131726;
+  --card:   rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+  --blue:   #4f8ef7;
+  --purple: #8b5cf6;
+  --cyan:   #22d3ee;
+  --pink:   #f472b6;
+  --green:  #34d399;
+  --white:  #ffffff;
+  --text:   rgba(255,255,255,0.9);
+  --text2:  rgba(255,255,255,0.6);
+  --muted:  rgba(255,255,255,0.35);
+  --grad:   linear-gradient(135deg, #4f8ef7, #8b5cf6, #22d3ee);
+  --grad2:  linear-gradient(135deg, #f472b6, #8b5cf6, #4f8ef7);
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', 'Noto Sans JP', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+
+/* CURSOR */
+.cursor { position: fixed; width: 8px; height: 8px; background: var(--blue); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); }
+.cursor-ring { position: fixed; width: 32px; height: 32px; border: 1.5px solid rgba(79,142,247,0.4); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: width 0.3s, height 0.3s, border-color 0.3s; }
+body:has(a:hover) .cursor-ring, body:has(button:hover) .cursor-ring, body:has(.wp-card:hover) .cursor-ring { width: 48px; height: 48px; border-color: rgba(79,142,247,0.7); }
+
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 1000; }
+
+/* NAV */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; padding: 20px 60px; display: flex; align-items: center; justify-content: space-between; background: rgba(8,11,20,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); transition: padding 0.3s; }
+.nav-logo { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; cursor: pointer; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.nav-links { display: flex; gap: 36px; list-style: none; }
+.nav-links a { font-size: 13px; font-weight: 500; color: var(--muted); text-decoration: none; transition: color 0.2s; cursor: pointer; position: relative; }
+.nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; right: 0; height: 1.5px; background: var(--grad); transform: scaleX(0); transition: transform 0.3s; border-radius: 1px; }
+.nav-links a:hover, .nav-links a.active { color: var(--white); }
+.nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
+.nav-cta { font-size: 12px; font-weight: 700; letter-spacing: 0.05em; color: var(--white); background: linear-gradient(135deg, var(--blue), var(--purple)); padding: 10px 22px; border: none; border-radius: 50px; cursor: pointer; font-family: 'Inter', sans-serif; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 16px rgba(79,142,247,0.3); }
+.nav-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(79,142,247,0.4); }
+
+/* PAGE SYSTEM */
+.page { display: none; animation: pgIn 0.4s ease; }
+.page.active { display: block; }
+@keyframes pgIn { from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);} }
+
+/* SHARED */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 60px; }
+.grad-text { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.grad-text2 { background: var(--grad2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(79,142,247,0.1); color: var(--blue); font-size: 11px; font-weight: 700; padding: 5px 14px; border-radius: 50px; border: 1px solid rgba(79,142,247,0.2); margin-bottom: 16px; letter-spacing: 0.08em; text-transform: uppercase; }
+.sec-title { font-size: clamp(32px, 4vw, 52px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 16px; }
+.sec-sub { font-size: 15px; color: var(--text2); line-height: 1.8; max-width: 560px; }
+.reveal { opacity:0; transform:translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.vis { opacity:1; transform:translateY(0); }
+.rd1{transition-delay:.1s;} .rd2{transition-delay:.2s;} .rd3{transition-delay:.3s;} .rd4{transition-delay:.4s;}
+.page-hero { padding: 136px 60px 72px; border-bottom: 1px solid var(--border); background: var(--bg2); }
+.crumb { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+.crumb span { cursor: pointer; transition: color 0.2s; } .crumb span:hover { color: var(--blue); }
+.btn-grad { font-size: 14px; font-weight: 700; color: var(--white); background: linear-gradient(135deg, var(--blue), var(--purple)); border: none; padding: 15px 34px; border-radius: 50px; cursor: pointer; font-family: 'Inter', sans-serif; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 24px rgba(79,142,247,0.35); display: inline-flex; align-items: center; gap: 8px; }
+.btn-grad:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(79,142,247,0.45); }
+.btn-ghost { font-size: 14px; font-weight: 600; color: var(--text2); background: rgba(255,255,255,0.05); border: 1.5px solid var(--border); padding: 14px 28px; border-radius: 50px; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s, border-color 0.2s, color 0.2s; }
+.btn-ghost:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.2); color: var(--white); }
+
+/* ── HOME ── */
+.hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 120px 60px 80px; position: relative; overflow: hidden; }
+.orb { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; }
+.o1 { width: 500px; height: 500px; background: rgba(79,142,247,0.15); top: -100px; left: -100px; animation: orbFloat 12s ease-in-out infinite; }
+.o2 { width: 400px; height: 400px; background: rgba(139,92,246,0.12); bottom: -80px; right: -80px; animation: orbFloat 15s ease-in-out infinite; animation-delay: -5s; }
+.o3 { width: 300px; height: 300px; background: rgba(34,211,238,0.1); top: 50%; left: 60%; animation: orbFloat 10s ease-in-out infinite; animation-delay: -3s; }
+@keyframes orbFloat { 0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(30px,-20px) scale(1.05);}66%{transform:translate(-20px,30px) scale(0.95);} }
+.hero::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(79,142,247,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(79,142,247,0.04) 1px,transparent 1px); background-size: 60px 60px; }
+.hero-content { position: relative; z-index: 2; max-width: 900px; }
+.hero-available { display: inline-flex; align-items: center; gap: 8px; background: rgba(52,211,153,0.1); color: var(--green); font-size: 12px; font-weight: 600; padding: 6px 16px; border-radius: 50px; border: 1px solid rgba(52,211,153,0.2); margin-bottom: 32px; opacity: 0; animation: fadeUp 0.8s 0.2s forwards; }
+.hero-available::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1;}50%{opacity:0.3;} }
+.hero-h1 { font-size: clamp(44px, 6.5vw, 88px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 24px; opacity: 0; animation: fadeUp 0.8s 0.4s forwards; }
+.hero-sub { font-size: 17px; color: var(--text2); line-height: 1.8; margin-bottom: 48px; max-width: 580px; margin-left: auto; margin-right: auto; opacity: 0; animation: fadeUp 0.8s 0.6s forwards; }
+.hero-btns { display: flex; gap: 14px; justify-content: center; margin-bottom: 72px; opacity: 0; animation: fadeUp 0.8s 0.8s forwards; }
+.hero-stats { display: flex; gap: 0; border: 1.5px solid var(--border); border-radius: 20px; overflow: hidden; opacity: 0; animation: fadeUp 0.8s 1s forwards; background: rgba(255,255,255,0.02); }
+.hs { padding: 24px 40px; text-align: center; position: relative; }
+.hs + .hs::before { content: ''; position: absolute; left: 0; top: 20%; bottom: 20%; width: 1px; background: var(--border); }
+.hs-num { font-size: 32px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin-bottom: 4px; }
+.hs-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+/* HOME WORKS PREVIEW */
+.featured-works { padding: 100px 0; }
+.works-preview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 56px; }
+
+/* WORK CARD */
+.wp-card { border-radius: 16px; overflow: hidden; border: 1.5px solid var(--border); background: var(--card); transition: transform 0.35s, border-color 0.35s, box-shadow 0.35s; cursor: pointer; position: relative; }
+.wp-card:hover { transform: translateY(-8px); box-shadow: 0 24px 60px rgba(0,0,0,0.4); }
+/* ※ badge for demo works */
+.wp-card.is-demo::before { content: '※ 架空サンプル'; position: absolute; top: 0; left: 0; right: 0; background: rgba(0,0,0,0.55); color: rgba(255,255,255,0.55); font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-align: center; padding: 4px 0; z-index: 10; backdrop-filter: blur(4px); }
+.wp-thumb { aspect-ratio: 16/9; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.wp-thumb-icon { font-size: 56px; transition: transform 0.5s; }
+.wp-card:hover .wp-thumb-icon { transform: scale(1.1); }
+.wt1{background:linear-gradient(135deg,#0a0912,#1a1025);}
+.wt2{background:linear-gradient(135deg,#0d0618,#1a0d30);}
+.wt3{background:linear-gradient(135deg,#0d0508,#1a0c10);}
+.wt4{background:linear-gradient(135deg,#0a1205,#251a08);}
+.wt5{background:linear-gradient(135deg,#08090e,#0d1020);}
+.wt6{background:linear-gradient(135deg,#0a1008,#101a0c);}
+.wt7{background:linear-gradient(135deg,#08100d,#0d1a18);}
+.wp-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0); transition: background 0.3s; display: flex; align-items: center; justify-content: center; }
+.wp-card:hover .wp-overlay { background: rgba(0,0,0,0.3); }
+.wp-view-btn { font-size: 12px; font-weight: 700; color: white; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 50px; opacity: 0; transform: translateY(8px); transition: opacity 0.3s, transform 0.3s; }
+.wp-card:hover .wp-view-btn { opacity: 1; transform: translateY(0); }
+.wp-tag { position: absolute; top: 20px; left: 12px; font-size: 10px; font-weight: 700; color: var(--white); padding: 4px 10px; border-radius: 50px; letter-spacing: 0.08em; z-index: 5; }
+.wp-info { padding: 20px; }
+.wp-cat { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--blue); margin-bottom: 6px; }
+.wp-name { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+.wp-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.wp-tech { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+.tech-tag { font-size: 10px; color: var(--text2); background: rgba(255,255,255,0.06); padding: 3px 9px; border-radius: 50px; border: 1px solid var(--border); }
+
+/* Note for demo works */
+.demo-note { font-size: 11px; color: var(--muted); text-align: center; margin-top: 28px; padding: 12px 20px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; line-height: 1.8; }
+.demo-note strong { color: rgba(255,255,255,0.5); }
+
+/* SKILLS BARS HOME */
+.skills-preview { padding: 100px 0; background: var(--bg2); }
+.skills-bars { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 56px; }
+.skill-bar-item { background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px 24px; }
+.sb-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.sb-name { font-size: 14px; font-weight: 600; }
+.sb-pct { font-size: 13px; font-weight: 700; color: var(--blue); }
+.sb-bar { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.sb-fill { height: 100%; border-radius: 3px; transition: width 1.2s ease; width: 0; }
+.sf-blue { background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+.sf-purple { background: linear-gradient(90deg, var(--purple), var(--pink)); }
+.sf-green { background: linear-gradient(90deg, var(--green), var(--cyan)); }
+.sf-orange { background: linear-gradient(90deg, #f97316, #fb923c); }
+
+/* PROCESS */
+.process-sec { padding: 100px 0; }
+.process-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-top: 60px; position: relative; }
+.process-steps::before { content: ''; position: absolute; top: 28px; left: 12.5%; right: 12.5%; height: 1px; background: linear-gradient(to right, var(--blue), var(--purple), var(--cyan)); opacity: 0.3; }
+.ps-item { padding: 0 16px; text-align: center; }
+.ps-circle { width: 56px; height: 56px; border-radius: 50%; border: 1.5px solid rgba(79,142,247,0.3); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 22px; background: rgba(79,142,247,0.06); position: relative; z-index: 2; transition: border-color 0.3s, background 0.3s; }
+.ps-item:hover .ps-circle { border-color: var(--blue); background: rgba(79,142,247,0.15); }
+.ps-step { font-size: 10px; color: var(--blue); font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+.ps-title { font-size: 14px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+.ps-body { font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+/* CTA HOME */
+.cta-home { padding: 100px 0; }
+.cta-card { background: var(--bg3); border: 1.5px solid var(--border); border-radius: 28px; padding: 80px; text-align: center; position: relative; overflow: hidden; }
+.cta-card::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(79,142,247,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(79,142,247,0.04) 1px,transparent 1px); background-size: 40px 40px; pointer-events: none; }
+.cta-glow1 { position: absolute; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle,rgba(79,142,247,0.12) 0%,transparent 70%); top: -100px; left: 50%; transform: translateX(-50%); pointer-events: none; }
+
+/* ── WORKS PAGE ── */
+.works-filter-bar { padding: 24px 60px; background: var(--bg2); border-bottom: 1px solid var(--border); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.wf-btn { font-size: 12px; font-weight: 600; color: var(--muted); background: transparent; border: 1.5px solid var(--border); padding: 8px 18px; border-radius: 50px; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+.wf-btn:hover, .wf-btn.active { color: var(--blue); border-color: rgba(79,142,247,0.4); background: rgba(79,142,247,0.08); }
+.works-grid-wrap { padding: 48px 60px 80px; max-width: 1320px; margin: 0 auto; }
+.works-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.wp-card.hidden { display: none; }
+.works-legend { margin-top: 40px; padding: 20px 24px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; font-size: 12px; color: var(--muted); line-height: 2; }
+.works-legend strong { color: rgba(255,255,255,0.5); }
+
+/* Add work tip */
+.add-work-tip { margin-top: 48px; padding: 28px 32px; border: 1.5px dashed rgba(79,142,247,0.25); border-radius: 16px; text-align: center; }
+.add-work-tip-title { font-size: 14px; font-weight: 700; color: var(--blue); margin-bottom: 8px; }
+.add-work-tip-body { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+/* ── SKILLS PAGE ── */
+.skills-all-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 56px; }
+.skill-category { background: var(--card); border: 1.5px solid var(--border); border-radius: 20px; padding: 32px; transition: border-color 0.3s; }
+.skill-category:hover { border-color: rgba(79,142,247,0.3); }
+.sc-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+.sc-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+.sci-blue{background:rgba(79,142,247,0.12);} .sci-purple{background:rgba(139,92,246,0.12);} .sci-green{background:rgba(52,211,153,0.12);}
+.sc-title { font-size: 16px; font-weight: 700; }
+.sc-bars { display: flex; flex-direction: column; gap: 16px; }
+.scb-top { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.scb-name { font-size: 13px; font-weight: 500; color: var(--text2); }
+.scb-pct { font-size: 12px; font-weight: 700; color: var(--blue); }
+.scb-bar { height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.scb-fill { height: 100%; border-radius: 3px; width: 0; transition: width 1.2s ease; }
+
+/* ── PRICING ── */
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 60px; }
+.price-card { border: 2px solid var(--border); border-radius: 24px; padding: 40px; position: relative; transition: border-color 0.3s, transform 0.3s; background: var(--card); }
+.price-card:hover { transform: translateY(-6px); }
+.price-card.popular { border-color: rgba(79,142,247,0.4); background: rgba(79,142,247,0.04); }
+.pop-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, var(--blue), var(--purple)); color: white; font-size: 11px; font-weight: 700; padding: 4px 16px; border-radius: 50px; white-space: nowrap; letter-spacing: 0.05em; }
+.price-plan { font-size: 12px; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 12px; }
+.price-val { font-size: 44px; font-weight: 800; letter-spacing: -0.04em; color: var(--white); margin-bottom: 4px; }
+.price-val span { font-size: 16px; font-weight: 400; color: var(--muted); }
+.price-range { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+.price-desc { font-size: 13px; color: var(--text2); margin-bottom: 24px; line-height: 1.7; }
+.price-divider { height: 1px; background: var(--border); margin-bottom: 24px; }
+.price-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+.price-list li { font-size: 13px; color: var(--text2); display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
+.pl-check { color: var(--blue); font-weight: 700; flex-shrink: 0; }
+.pl-check.off { color: var(--muted); }
+.price-btn { width: 100%; font-size: 13px; font-weight: 700; padding: 14px; border-radius: 50px; cursor: pointer; border: 2px solid; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+.pb-out { background: transparent; color: var(--text2); border-color: var(--border); }
+.pb-out:hover { border-color: var(--blue); color: var(--blue); background: rgba(79,142,247,0.06); }
+.pb-fill { background: linear-gradient(135deg, var(--blue), var(--purple)); color: white; border-color: transparent; box-shadow: 0 4px 20px rgba(79,142,247,0.3); }
+.pb-fill:hover { box-shadow: 0 8px 32px rgba(79,142,247,0.45); transform: translateY(-1px); }
+.notice-sec { padding: 60px 0; }
+.notice-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 32px; }
+.notice-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; padding: 24px; display: flex; gap: 16px; align-items: flex-start; }
+.nc-icon { font-size: 24px; flex-shrink: 0; }
+.nc-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.nc-body { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+/* ── CONTACT ── */
+.contact-layout { display: grid; grid-template-columns: 1fr 1.6fr; gap: 48px; padding: 72px 0; }
+.cl-info-title { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.3; }
+.cl-info-body { font-size: 14px; color: var(--text2); line-height: 1.9; margin-bottom: 36px; }
+.cl-cards { display: flex; flex-direction: column; gap: 14px; }
+.cl-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 18px 20px; display: flex; align-items: center; gap: 14px; transition: border-color 0.2s; }
+.cl-card:hover { border-color: rgba(79,142,247,0.3); }
+.cl-c-icon { width: 38px; height: 38px; border-radius: 10px; background: rgba(79,142,247,0.1); display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+.cl-c-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 3px; }
+.cl-c-val { font-size: 13px; font-weight: 500; color: var(--text); }
+.contact-form { background: var(--bg3); border: 1.5px solid var(--border); border-radius: 24px; padding: 40px; }
+.cf-title { font-size: 22px; font-weight: 800; margin-bottom: 28px; letter-spacing: -0.02em; }
+.f-grp { margin-bottom: 18px; }
+.f-lbl { font-size: 12px; font-weight: 700; color: var(--text2); display: block; margin-bottom: 7px; letter-spacing: 0.03em; }
+.f-req { color: var(--blue); margin-left: 3px; }
+.f-inp,.f-sel,.f-ta { width: 100%; background: rgba(255,255,255,0.04); border: 1.5px solid var(--border); color: var(--white); font-family: 'Inter','Noto Sans JP',sans-serif; font-size: 13px; padding: 12px 16px; border-radius: 10px; outline: none; transition: border-color 0.2s, background 0.2s; }
+.f-inp:focus,.f-sel:focus,.f-ta:focus { border-color: var(--blue); background: rgba(79,142,247,0.04); box-shadow: 0 0 0 3px rgba(79,142,247,0.08); }
+.f-inp::placeholder,.f-ta::placeholder { color: var(--muted); }
+.f-ta { resize: vertical; min-height: 120px; }
+.f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.f-btn { width: 100%; background: linear-gradient(135deg, var(--blue), var(--purple)); color: white; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; border: none; padding: 14px; border-radius: 50px; cursor: pointer; margin-top: 8px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 20px rgba(79,142,247,0.3); }
+.f-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(79,142,247,0.4); }
+.f-note { font-size: 11px; color: var(--muted); margin-top: 10px; text-align: center; }
+.f-sel option { background: #131726; }
+
+/* FOOTER */
+footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 64px 60px 36px; }
+.ft-inner { max-width: 1200px; margin: 0 auto; }
+.ft-top { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+.ft-logo { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; cursor: pointer; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; margin-bottom: 12px; }
+.ft-tag { font-size: 13px; color: var(--muted); line-height: 1.8; margin-bottom: 8px; }
+.ft-email { font-size: 12px; color: rgba(255,255,255,0.4); }
+.ft-col h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); margin-bottom: 16px; }
+.ft-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.ft-col a { font-size: 13px; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.2s; cursor: pointer; }
+.ft-col a:hover { color: var(--white); }
+.ft-bot { display: flex; justify-content: space-between; align-items: center; padding-top: 28px; border-top: 1px solid var(--border); }
+.ft-copy { font-size: 12px; color: var(--muted); }
+.ft-legal a { font-size: 12px; color: var(--muted); text-decoration: none; cursor: pointer; }
+.ft-legal a:hover { color: rgba(255,255,255,0.6); }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);} }
+@keyframes fadeIn  { from{opacity:0;}to{opacity:1;} }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="curR"></div>
+
+<nav>
+  <span class="nav-logo" onclick="goTo('home')">Portfolio.</span>
+  <ul class="nav-links">
+    <li><a onclick="goTo('works')" data-page="works">Works</a></li>
+    <li><a onclick="goTo('skills')" data-page="skills">Skills</a></li>
+    <li><a onclick="goTo('pricing')" data-page="pricing">Pricing</a></li>
+    <li><a onclick="goTo('contact')" data-page="contact">Contact</a></li>
+  </ul>
+  <button class="nav-cta" onclick="goTo('contact')">✉ お仕事のご相談</button>
+</nav>
+
+<!-- ════ HOME ════ -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+    <div class="hero-content">
+      <div class="hero-available">🟢 現在、新規案件受付中</div>
+      <h1 class="hero-h1">
+        <span class="grad-text">デザイン</span>から<br>
+        <span class="grad-text2">実装</span>まで<br>
+        一貫してお届け
+      </h1>
+      <p class="hero-sub">Webデザイナー × フロントエンドエンジニア。高品質なコーポレートサイト・LPを高速・低コストで制作します。</p>
+      <div class="hero-btns">
+        <button class="btn-grad" onclick="goTo('works')">🎨 制作実績を見る</button>
+        <button class="btn-ghost" onclick="goTo('contact')">お見積もり・相談（無料）</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hs"><div class="hs-num grad-text">7<span style="font-size:20px;">+</span></div><div class="hs-label">制作実績</div></div>
+        <div class="hs"><div class="hs-num grad-text">100<span style="font-size:20px;">%</span></div><div class="hs-label">デザイン×実装 一貫</div></div>
+        <div class="hs"><div class="hs-num grad-text">3<span style="font-size:20px;">日〜</span></div><div class="hs-label">最短納期</div></div>
+        <div class="hs"><div class="hs-num grad-text">全対応</div><div class="hs-label">幅広いジャンル</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="featured-works">
+    <div class="container">
+      <div class="chip reveal">✦ Featured Works</div>
+      <h2 class="sec-title reveal rd1">制作<span class="grad-text">実績</span></h2>
+      <p class="sec-sub reveal rd2">高級レストランからゲーム・VTuber・医療まで、幅広いジャンルに対応できます。</p>
+      <div class="works-preview" id="homeWorksGrid"></div>
+      <div class="demo-note reveal" style="margin-top:28px;">
+        <strong>※ 現在掲載中の実績はすべてポートフォリオ用の架空サンプルです。</strong><br>
+        今後、実際のご依頼実績も随時追加してまいります。
+      </div>
+      <div style="text-align:center;margin-top:32px;"><button class="btn-ghost reveal" onclick="goTo('works')">すべての実績を見る →</button></div>
+    </div>
+  </section>
+
+  <section class="skills-preview">
+    <div class="container">
+      <div class="chip reveal">✦ Skills</div>
+      <h2 class="sec-title reveal rd1"><span class="grad-text">スキル</span>・得意領域</h2>
+      <p class="sec-sub reveal rd2">デザインから実装まで、ワンストップで対応できます。</p>
+      <div class="skills-bars">
+        <div class="skill-bar-item reveal"><div class="sb-header"><div class="sb-name">🎨 UI/UXデザイン</div><div class="sb-pct">95%</div></div><div class="sb-bar"><div class="sb-fill sf-blue" data-w="95"></div></div></div>
+        <div class="skill-bar-item reveal rd1"><div class="sb-header"><div class="sb-name">💻 HTML / CSS / JS</div><div class="sb-pct">90%</div></div><div class="sb-bar"><div class="sb-fill sf-purple" data-w="90"></div></div></div>
+        <div class="skill-bar-item reveal rd2"><div class="sb-header"><div class="sb-name">⚡ Google Apps Script</div><div class="sb-pct">85%</div></div><div class="sb-bar"><div class="sb-fill sf-green" data-w="85"></div></div></div>
+        <div class="skill-bar-item reveal rd3"><div class="sb-header"><div class="sb-name">📱 レスポンシブ・SPA設計</div><div class="sb-pct">92%</div></div><div class="sb-bar"><div class="sb-fill sf-orange" data-w="92"></div></div></div>
+      </div>
+      <div style="text-align:center;margin-top:36px;"><button class="btn-ghost reveal" onclick="goTo('skills')">スキル詳細を見る →</button></div>
+    </div>
+  </section>
+
+  <section class="process-sec">
+    <div class="container">
+      <div class="chip reveal">✦ Flow</div>
+      <h2 class="sec-title reveal rd1">制作の<span class="grad-text">流れ</span></h2>
+      <div class="process-steps">
+        <div class="ps-item reveal"><div class="ps-circle">💬</div><div class="ps-step">Step 01</div><div class="ps-title">ヒアリング</div><p class="ps-body">目的・ターゲット・参考サイトをお聞きします。無料でご相談受付中。</p></div>
+        <div class="ps-item reveal rd1"><div class="ps-circle">🎨</div><div class="ps-step">Step 02</div><div class="ps-title">デザイン提案</div><p class="ps-body">ご要望をもとにデザイン案を作成。修正2回まで無料対応。</p></div>
+        <div class="ps-item reveal rd2"><div class="ps-circle">💻</div><div class="ps-step">Step 03</div><div class="ps-title">実装・開発</div><p class="ps-body">承認後、HTMLコーディングまたはWordPress実装で納品物を作成。</p></div>
+        <div class="ps-item reveal rd3"><div class="ps-circle">🚀</div><div class="ps-step">Step 04</div><div class="ps-title">納品・公開</div><p class="ps-body">VercelまたはGitHub Pagesへのデプロイまでサポートします。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-home">
+    <div class="container">
+      <div class="cta-card reveal">
+        <div class="cta-glow1"></div>
+        <div class="chip" style="position:relative;z-index:2;">✦ お見積もり無料</div>
+        <h2 class="sec-title" style="position:relative;z-index:2;">まずは<span class="grad-text">お気軽</span>に<br>ご相談ください</h2>
+        <p class="sec-sub" style="margin:0 auto 40px;position:relative;z-index:2;">制作のご依頼・お見積もり・ご質問など、何でもお聞きします。通常24時間以内にご返信します。</p>
+        <div style="display:flex;gap:14px;justify-content:center;position:relative;z-index:2;">
+          <button class="btn-grad" onclick="goTo('contact')">✉ お問い合わせ</button>
+          <button class="btn-ghost" onclick="goTo('pricing')">料金プランを見る</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ════ WORKS ════ -->
+<div id="page-works" class="page">
+  <div class="page-hero">
+    <div class="crumb"><span onclick="goTo('home')">Home</span> / Works</div>
+    <div class="chip">✦ Portfolio Works</div>
+    <h1 class="sec-title"><span class="grad-text">制作実績</span></h1>
+    <p class="sec-sub">各サイトは実際にご覧いただけます。カードをクリックしてサイトを開いてください。</p>
+  </div>
+  <div class="works-filter-bar" id="worksFilterBar"></div>
+  <div class="works-grid-wrap">
+    <div class="works-grid" id="worksGrid"></div>
+    <div class="works-legend">
+      <strong>※ 架空サンプル</strong> ── ポートフォリオ用に制作した架空のサンプルサイトです。実在の企業・人物とは関係ありません。<br>
+      <strong>表示なし</strong> ── 実際のご依頼で制作した実績サイトです（今後追加予定）。
+    </div>
+
+  </div>
+</div>
+
+<!-- ════ SKILLS ════ -->
+<div id="page-skills" class="page">
+  <div class="page-hero">
+    <div class="crumb"><span onclick="goTo('home')">Home</span> / Skills</div>
+    <div class="chip">✦ Skills</div>
+    <h1 class="sec-title"><span class="grad-text">スキル</span></h1>
+    <p class="sec-sub">デザインから実装・自動化まで、フルスタックに対応できます。</p>
+  </div>
+  <section style="padding:80px 0;">
+    <div class="container">
+      <div class="chip reveal">✦ Technical Skills</div>
+      <h2 class="sec-title reveal rd1">技術スキル</h2>
+      <div class="skills-all-grid">
+        <div class="skill-category reveal">
+          <div class="sc-header"><div class="sc-icon sci-blue">🎨</div><div class="sc-title">デザイン</div></div>
+          <div class="sc-bars">
+            <div><div class="scb-top"><div class="scb-name">UI/UXデザイン</div><div class="scb-pct">95%</div></div><div class="scb-bar"><div class="scb-fill" data-w="95" style="background:linear-gradient(90deg,#4f8ef7,#22d3ee);"></div></div></div>
+            <div><div class="scb-top"><div class="scb-name">ビジュアルデザイン</div><div class="scb-pct">90%</div></div><div class="scb-bar"><div class="scb-fill" data-w="90" style="background:linear-gradient(90deg,#4f8ef7,#22d3ee);"></div></div></div>
+            <div><div class="scb-top"><div class="scb-name">レスポンシブデザイン</div><div class="scb-pct">92%</div></div><div class="scb-bar"><div class="scb-fill" data-w="92" style="background:linear-gradient(90deg,#4f8ef7,#22d3ee);"></div></div></div>
+            <div><div class="scb-top"><div class="scb-name">ブランディング・VI設計</div><div class="scb-pct">88%</div></div><div class="scb-bar"><div class="scb-fill" data-w="88" style="background:linear-gradient(90deg,#4f8ef7,#22d3ee);"></div></div></div>
+          </div>
+        </div>
+        <div class="skill-category reveal rd1">
+          <div class="sc-header"><div class="sc-icon sci-purple">💻</div><div class="sc-title">フロントエンド実装</div></div>
+          <div class="sc-bars">
+            <div><div class="scb-top"><div class="scb-name">HTML / CSS</div><div class="scb-pct">90%</div></div><div class="scb-bar"><div class="scb-fill" data-w="90" style="background:linear-gradient(90deg,#8b5cf6,#f472b6);"></div></div></div>
+            <div><div class="scb-top"><div class="scb-name">JavaScript（SPA設計）</div><div class="scb-pct">85%</div></div><div class="scb-bar"><div class="scb-fill" data-w="85" style="background:linear-gradient(90deg,#8b5cf6,#f472b6);"></div></div></div>
+            <div><div class="scb-top"><div class="scb-name">CSS アニメーション</div><div class="scb-pct">88%</div></div><div class="scb-bar"><div class="scb-fill" data-w="88" style="background:linear-gradient(90deg,#8b5cf6,#f472b6);"></div></div></div>
+            <div><div class="scb-top"><div class="scb-name">Canvas / WebGL</div><div class="scb-pct">72%</div></div><div class="scb-bar"><div class="scb-fill" data-w="72" style="background:linear-gradient(90deg,#8b5cf6,#f472b6);"></div></div></div>
+          </div>
+        </div>
+        <div class="skill-category reveal">
+          <div class="sc-header"><div class="sc-icon sci-green">⚡</div><div class="sc-title">バックエンド・自動化</div></div>
+          <div class="sc-bars">
+            <div><div class="scb-top"><div class="scb-name">Google Apps Script</div><div class="scb-pct">85%</div></div><div class="scb-bar"><div class="scb-fill" data-w="85" style="background:linear-gradient(90deg,#34d399,#22d3ee);"></div></div></div>
+            <div><div class="scb-top"><div class="scb-name">Webhook / Discord連携</div><div class="scb-pct">80%</div></div><div class="scb-bar"><div class="scb-fill" data-w="80" style="background:linear-gradient(90deg,#34d399,#22d3ee);"></div></div></div>
+            <div><div class="scb-top"><div class="scb-name">スプレッドシート連携</div><div class="scb-pct">88%</div></div><div class="scb-bar"><div class="scb-fill" data-w="88" style="background:linear-gradient(90deg,#34d399,#22d3ee);"></div></div></div>
+            <div><div class="scb-top"><div class="scb-name">フォーム自動化</div><div class="scb-pct">82%</div></div><div class="scb-bar"><div class="scb-fill" data-w="82" style="background:linear-gradient(90deg,#34d399,#22d3ee);"></div></div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ════ PRICING ════ -->
+<div id="page-pricing" class="page">
+  <div class="page-hero">
+    <div class="crumb"><span onclick="goTo('home')">Home</span> / Pricing</div>
+    <div class="chip">✦ Pricing</div>
+    <h1 class="sec-title"><span class="grad-text">料金プラン</span></h1>
+    <p class="sec-sub">シンプルで分かりやすい料金体系。すべてのプランに無料相談・見積もりが含まれます。</p>
+  </div>
+  <div class="container" style="padding-top:64px;padding-bottom:80px;">
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-plan">ライト</div>
+        <div class="price-val">¥30,000 <span>〜</span></div>
+        <div class="price-range">1ページLP / 修正2回まで</div>
+        <div class="price-desc">シンプルなランディングページ。ファーストサイトや告知ページに最適。</div>
+        <div class="price-divider"></div>
+        <ul class="price-list">
+          <li><span class="pl-check">✦</span>1ページ LP</li>
+          <li><span class="pl-check">✦</span>レスポンシブ対応</li>
+          <li><span class="pl-check">✦</span>お問い合わせフォーム</li>
+          <li><span class="pl-check">✦</span>修正2回まで無料</li>
+          <li><span class="pl-check">✦</span>Vercel/GitHub公開サポート</li>
+          <li><span class="pl-check off">—</span><span style="color:var(--muted)">マルチページ</span></li>
+          <li><span class="pl-check off">—</span><span style="color:var(--muted)">GASバックエンド連携</span></li>
+        </ul>
+        <button class="price-btn pb-out" onclick="goToContactWithPlan('ライトプラン（¥30,000〜）')">相談・見積もり（無料）</button>
+      </div>
+      <div class="price-card popular reveal rd1">
+        <div class="pop-badge">✦ 最も人気</div>
+        <div class="price-plan">スタンダード</div>
+        <div class="price-val">¥80,000 <span>〜</span></div>
+        <div class="price-range">複数ページSPA / 修正3回まで</div>
+        <div class="price-desc">本格的なコーポレートサイトや商品サイト。SPA形式で完成度の高い仕上がり。</div>
+        <div class="price-divider"></div>
+        <ul class="price-list">
+          <li><span class="pl-check">✦</span>5ページ SPA構成</li>
+          <li><span class="pl-check">✦</span>レスポンシブ対応</li>
+          <li><span class="pl-check">✦</span>お問い合わせ・フォーム</li>
+          <li><span class="pl-check">✦</span>修正3回まで無料</li>
+          <li><span class="pl-check">✦</span>Vercel公開・ドメイン設定</li>
+          <li><span class="pl-check">✦</span>GASフォームバックエンド</li>
+          <li><span class="pl-check off">—</span><span style="color:var(--muted)">ECサイト・決済連携</span></li>
+        </ul>
+        <button class="price-btn pb-fill" onclick="goToContactWithPlan('スタンダードプラン（¥80,000〜）')">相談・見積もり（無料）</button>
+      </div>
+      <div class="price-card reveal rd2">
+        <div class="price-plan">プレミアム</div>
+        <div class="price-val">¥150,000 <span>〜</span></div>
+        <div class="price-range">フルカスタム / 要件に応じて</div>
+        <div class="price-desc">EC機能・予約システム・GAS自動化など、複雑な要件にも対応するカスタム開発。</div>
+        <div class="price-divider"></div>
+        <ul class="price-list">
+          <li><span class="pl-check">✦</span>ページ数・機能数 応相談</li>
+          <li><span class="pl-check">✦</span>レスポンシブ完全対応</li>
+          <li><span class="pl-check">✦</span>修正 無制限（期間内）</li>
+          <li><span class="pl-check">✦</span>GAS自動化・Discord連携</li>
+          <li><span class="pl-check">✦</span>公開後サポート 1ヶ月</li>
+          <li><span class="pl-check">✦</span>SEO基本対策</li>
+          <li><span class="pl-check">✦</span>保守契約オプションあり</li>
+        </ul>
+        <button class="price-btn pb-out" onclick="goToContactWithPlan('プレミアムプラン（¥150,000〜）')">相談・見積もり（無料）</button>
+      </div>
+    </div>
+    <section class="notice-sec">
+      <div class="chip reveal">✦ ご注意事項</div>
+      <div class="notice-grid">
+        <div class="notice-card reveal"><div class="nc-icon">📅</div><div><div class="nc-title">納期について</div><div class="nc-body">ライト：3〜7日 / スタンダード：7〜14日 / プレミアム：要相談。急ぎの場合は特急料金（+30%）で対応可能です。</div></div></div>
+        <div class="notice-card reveal rd1"><div class="nc-icon">🔄</div><div><div class="nc-title">修正について</div><div class="nc-body">各プランの無料修正回数を超えた場合は1回¥5,000〜で対応します。デザインの大幅変更は別途お見積もりとなります。</div></div></div>
+        <div class="notice-card reveal rd2"><div class="nc-icon">💳</div><div><div class="nc-title">お支払いについて</div><div class="nc-body">着手金50%・納品時50%の2回払いが基本です。銀行振込にて承ります。その他お支払方法をご希望の場合は相談可能です。</div></div></div>
+        <div class="notice-card reveal rd3"><div class="nc-icon">📞</div><div><div class="nc-title">アフターサポート</div><div class="nc-body">納品後30日以内の軽微な修正は無料で対応します。保守契約（月¥10,000〜）も承っています。</div></div></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ════ CONTACT ════ -->
+<div id="page-contact" class="page">
+  <div class="page-hero">
+    <div class="crumb"><span onclick="goTo('home')">Home</span> / Contact</div>
+    <div class="chip">✦ Contact</div>
+    <h1 class="sec-title"><span class="grad-text">お問い合わせ</span></h1>
+    <p class="sec-sub">制作のご依頼・お見積もり・ご質問など、お気軽にどうぞ。通常24時間以内にご返信します。</p>
+  </div>
+  <div class="container">
+    <div class="contact-layout">
+      <div class="cl-info">
+        <div class="cl-info-title">まずは<br><span class="grad-text">気軽に</span><br>ご相談を</div>
+        <p class="cl-info-body">「どんなサイトが作れる？」「予算はいくら必要？」など、どんな質問でも歓迎です。お見積もり・ご相談は無料です。</p>
+        <div class="cl-cards">
+          <div class="cl-card"><div class="cl-c-icon">📧</div><div><div class="cl-c-title">Email</div><div class="cl-c-val">fonia0620@gmail.com</div></div></div>
+          <div class="cl-card"><div class="cl-c-icon">⏰</div><div><div class="cl-c-title">返信時間</div><div class="cl-c-val">通常24時間以内</div></div></div>
+          <div class="cl-card"><div class="cl-c-icon">💰</div><div><div class="cl-c-title">お見積もり</div><div class="cl-c-val">無料・相談のみもOK</div></div></div>
+        </div>
+      </div>
+      <div class="contact-form">
+        <div class="cf-title">お問い合わせ<span class="grad-text">フォーム</span></div>
+        <div class="f-row">
+          <div class="f-grp"><label class="f-lbl">お名前<span class="f-req">*</span></label><input type="text" class="f-inp" placeholder="山田 太郎"></div>
+          <div class="f-grp"><label class="f-lbl">会社名・屋号</label><input type="text" class="f-inp" placeholder="株式会社〇〇 / 個人"></div>
+        </div>
+        <div class="f-grp"><label class="f-lbl">メールアドレス<span class="f-req">*</span></label><input type="email" class="f-inp" placeholder="example@email.com"></div>
+        <div class="f-grp">
+          <label class="f-lbl">ご希望プラン</label>
+          <select class="f-sel" id="planSelect">
+            <option value="">選択してください（任意）</option>
+            <option value="ライトプラン（¥30,000〜）">ライトプラン（¥30,000〜）</option>
+            <option value="スタンダードプラン（¥80,000〜）">スタンダードプラン（¥80,000〜）</option>
+            <option value="プレミアムプラン（¥150,000〜）">プレミアムプラン（¥150,000〜）</option>
+            <option value="プランは相談して決めたい">プランは相談して決めたい</option>
+          </select>
+        </div>
+        <div class="f-grp">
+          <label class="f-lbl">ご依頼の種別<span class="f-req">*</span></label>
+          <select class="f-sel">
+            <option value="">選択してください</option>
+            <option>Webサイト制作（LP）</option>
+            <option>Webサイト制作（複数ページ）</option>
+            <option>GAS / 業務自動化ツール開発</option>
+            <option>既存サイトの修正・改善</option>
+            <option>料金・納期の確認</option>
+            <option>その他</option>
+          </select>
+        </div>
+        <div class="f-row">
+          <div class="f-grp"><label class="f-lbl">ご予算</label><select class="f-sel"><option value="">選択してください</option><option>〜¥50,000</option><option>¥50,000〜¥100,000</option><option>¥100,000〜¥200,000</option><option>¥200,000以上</option><option>相談して決めたい</option></select></div>
+          <div class="f-grp"><label class="f-lbl">ご希望納期</label><input type="text" class="f-inp" placeholder="例：6月末まで / 急ぎ"></div>
+        </div>
+        <div class="f-grp"><label class="f-lbl">ご依頼の詳細<span class="f-req">*</span></label><textarea class="f-ta" placeholder="作りたいサイトのイメージ・参考サイト・業種など、できるだけ詳しくご記入ください"></textarea></div>
+        <button class="f-btn">送信する ✦</button>
+        <p class="f-note">通常24時間以内にご返信します。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-inner">
+    <div class="ft-top">
+      <div>
+        <span class="ft-logo" onclick="goTo('home')">Portfolio.</span>
+        <p class="ft-tag">デザイン × 実装、一貫してお届け。<br>幅広いジャンルに対応する高品質なWeb制作。</p>
+        <p class="ft-email">📧 fonia0620@gmail.com</p>
+      </div>
+      <div class="ft-col">
+        <h4>Menu</h4>
+        <ul>
+          <li><a onclick="goTo('works')">Works</a></li>
+          <li><a onclick="goTo('skills')">Skills</a></li>
+          <li><a onclick="goTo('pricing')">Pricing</a></li>
+          <li><a onclick="goTo('contact')">Contact</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a onclick="goTo('contact')">お問い合わせ</a></li>
+          <li><a onclick="goTo('pricing')">料金プラン</a></li>
+          <li><a onclick="goTo('contact')">無料相談</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ft-bot">
+      <p class="ft-copy">© 2026 Portfolio. All Rights Reserved.</p>
+      <div class="ft-legal"><a onclick="goTo('contact')">プライバシーポリシー</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ─── WORKS DATA ───
+// isDemo: true  → 架空サンプル（※マークが表示される）
+// isDemo: false → 実際の依頼実績（※マークなし）
+// url: 各サイトのファイル名（Vercel公開後はそのまま使用可）
+// categories: フィルタリング用カテゴリ（複数指定可）
+const works = [
+  {
+    id: 0,
+    isDemo: true,
+    cat: 'Restaurant LP',
+    title: 'LUMIÈRE',
+    desc: 'ミシュラン3つ星高級フレンチ×イタリアンレストランのLP。カスタムカーソル・予約フォーム実装。',
+    icon: '🍽',
+    bg: 'linear-gradient(135deg,#0a0912,#1a1025)',
+    tag: '高級飲食',
+    tagColor: 'rgba(201,151,58,0.85)',
+    url: 'https://lumiere-lp-xi.vercel.app/',
+    categories: ['LP', '飲食'],
+  },
+  {
+    id: 1,
+    isDemo: true,
+    cat: 'VTuber Official',
+    title: '夢咲ひなた',
+    desc: 'ポップ×カラフルなVTuber公式サイト。マウスエフェクト・アニメーション実装。',
+    icon: '🌸',
+    bg: 'linear-gradient(135deg,#0d0618,#1a0d30)',
+    tag: 'VTuber',
+    tagColor: 'rgba(192,84,252,0.85)',
+    url: 'https://hinata-yumesaki.vercel.app/',
+    categories: ['LP', 'エンタメ'],
+  },
+  {
+    id: 2,
+    isDemo: true,
+    cat: 'Game LP',
+    title: 'ABYSS CHRONICLE',
+    desc: 'ダークファンタジーRPGのシネマティックなゲームLP。Canvas APIパーティクル演出付き。',
+    icon: '⚔️',
+    bg: 'linear-gradient(135deg,#0d0508,#1a0c10)',
+    tag: 'ゲーム',
+    tagColor: 'rgba(192,25,44,0.85)',
+    url: 'https://abyss-chronicle.vercel.app/',
+    categories: ['LP', 'エンタメ'],
+  },
+  {
+    id: 3,
+    isDemo: true,
+    cat: 'Cosmetics SPA',
+    title: 'MIEL SKINCARE',
+    desc: 'プレミアムスキンケアブランドの5ページSPA。商品ページ・ブランドストーリー・ガイド含む。',
+    icon: '🍯',
+    bg: 'linear-gradient(135deg,#1a1205,#251a08)',
+    tag: 'コスメ',
+    tagColor: 'rgba(52,211,153,0.75)',
+    url: 'https://miel-skincare.vercel.app/',
+    categories: ['SPA', 'ビジネス'],
+  },
+  {
+    id: 4,
+    isDemo: true,
+    cat: 'IT Corporate SPA',
+    title: 'NEXUS',
+    desc: 'AI自動化SaaSの5ページコーポレートサイト。料金プラン・FAQアコーディオン実装。',
+    icon: '🚀',
+    bg: 'linear-gradient(135deg,#08090e,#0d1020)',
+    tag: 'IT/SaaS',
+    tagColor: 'rgba(79,142,247,0.85)',
+    url: 'https://nexus-saas-gamma.vercel.app/',
+    categories: ['SPA', 'ビジネス'],
+  },
+  {
+    id: 5,
+    isDemo: true,
+    cat: 'Apparel SPA',
+    title: 'SHIRO',
+    desc: '日本発ミニマルライフスタイルブランドのSPA。コレクション・店舗・お問い合わせ含む。',
+    icon: '🧥',
+    bg: 'linear-gradient(135deg,#0a1008,#101a0c)',
+    tag: 'アパレル',
+    tagColor: 'rgba(122,140,120,0.85)',
+    url: 'https://shiro-lifestyle.vercel.app/',
+    categories: ['SPA', 'ビジネス'],
+  },
+  {
+    id: 6,
+    isDemo: true,
+    cat: 'Medical Clinic SPA',
+    title: '葵クリニック',
+    desc: '内科・皮膚科・美容医療クリニックの5ページSPA。診療時間表・予約フォーム実装。',
+    icon: '🏥',
+    bg: 'linear-gradient(135deg,#08100d,#0d1a18)',
+    tag: '医療',
+    tagColor: 'rgba(13,124,110,0.85)',
+    url: 'https://aoi-clinic.vercel.app/',
+    categories: ['SPA', '医療'],
+  },
+  // ─────────────────────────────────────────────
+  // 今後の実績はここに追加してください。例:
+  // {
+  //   id: 7,
+  //   isDemo: false,           // ← 実際の依頼実績
+  //   cat: 'Corporate Site',
+  //   title: '〇〇株式会社',
+  //   desc: 'コーポレートサイトのリニューアル制作。',
+  //   icon: '🏢',
+  //   bg: 'linear-gradient(135deg,#0a0c10,#12151f)',
+  //   tag: 'コーポレート',
+  //   tagColor: 'rgba(79,142,247,0.85)',
+  //   url: 'https://example.com',  // ← 実際のURLでもOK
+  //   categories: ['SPA', 'ビジネス'],
+  // },
+  // ─────────────────────────────────────────────
+];
+
+// ─── ALL FILTER CATEGORIES ───
+const allCategories = ['すべて', 'LP', 'SPA', '飲食', 'エンタメ', 'ビジネス', '医療'];
+
+// ─── BUILD WORKS CARD HTML ───
+function buildCard(w, forHome = false) {
+  const demoClass = w.isDemo ? ' is-demo' : '';
+  const demoLabel = w.isDemo ? '<span style="position:absolute;top:0;left:0;right:0;background:rgba(0,0,0,0.55);color:rgba(255,255,255,0.55);font-size:9px;font-weight:600;letter-spacing:0.1em;text-align:center;padding:4px 0;z-index:10;backdrop-filter:blur(4px);">※ 架空サンプル</span>' : '';
+  const catData = w.categories.map(c => `data-cat-${c}="1"`).join(' ');
+  return `
+    <div class="wp-card${demoClass}" data-cats="${w.categories.join(',')}" onclick="openWork(${w.id})" style="position:relative;">
+      ${demoLabel}
+      <div class="wp-thumb" style="background:${w.bg};">
+        <div class="wp-thumb-icon">${w.icon}</div>
+        <div class="wp-overlay"><div class="wp-view-btn">サイトを開く ↗</div></div>
+        <span class="wp-tag" style="background:${w.tagColor};">${w.tag}</span>
+      </div>
+      <div class="wp-info">
+        <div class="wp-cat">${w.cat}</div>
+        <div class="wp-name">${w.title}</div>
+        <div class="wp-desc">${w.desc}</div>
+      </div>
+    </div>`;
+}
+
+// ─── OPEN WORK (new tab) ───
+function openWork(id) {
+  const w = works.find(x => x.id === id);
+  if (w && w.url) window.open(w.url, '_blank');
+}
+
+// ─── RENDER HOME WORKS (first 6) ───
+function renderHomeWorks() {
+  const g = document.getElementById('homeWorksGrid');
+  if (!g) return;
+  g.innerHTML = works.slice(0, 6).map(w => buildCard(w, true)).join('');
+}
+
+// ─── RENDER WORKS PAGE ───
+function renderWorksPage() {
+  // Filter bar
+  const fb = document.getElementById('worksFilterBar');
+  if (fb && !fb.hasChildNodes()) {
+    allCategories.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'wf-btn' + (cat === 'すべて' ? ' active' : '');
+      btn.textContent = cat;
+      btn.onclick = () => filterWorks(cat, btn);
+      fb.appendChild(btn);
+    });
+  }
+  // Grid
+  const g = document.getElementById('worksGrid');
+  if (g && !g.hasChildNodes()) {
+    g.innerHTML = works.map(w => buildCard(w)).join('');
+  }
+}
+
+// ─── FILTER WORKS ───
+function filterWorks(cat, btn) {
+  document.querySelectorAll('.works-filter-bar .wf-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#worksGrid .wp-card').forEach((card, i) => {
+    const cats = works[i]?.categories || [];
+    if (cat === 'すべて' || cats.includes(cat)) {
+      card.classList.remove('hidden');
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+}
+
+// ─── PAGE NAV ───
+function goTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.remove('active');
+    if (a.dataset.page === page) a.classList.add('active');
+  });
+  const t = document.getElementById('page-' + page);
+  if (t) {
+    t.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (page === 'works') renderWorksPage();
+    setTimeout(() => initPage(t), 50);
+  }
+}
+
+// ─── CONTACT WITH PRE-SELECTED PLAN ───
+function goToContactWithPlan(plan) {
+  goTo('contact');
+  setTimeout(() => {
+    const sel = document.getElementById('planSelect');
+    if (sel) sel.value = plan;
+  }, 80);
+}
+
+// ─── INIT PAGE (reveals + skill bars) ───
+function initPage(t) {
+  t.querySelectorAll('.reveal').forEach(el => el.classList.remove('vis'));
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+  }, { threshold: 0.1 });
+  t.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  setTimeout(() => {
+    t.querySelectorAll('[data-w]').forEach(el => { el.style.width = el.dataset.w + '%'; });
+  }, 200);
+}
+
+// ─── CURSOR ───
+const cur = document.getElementById('cur'), curR = document.getElementById('curR');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+(function loop() {
+  cur.style.left = mx + 'px'; cur.style.top = my + 'px';
+  rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+  curR.style.left = rx + 'px'; curR.style.top = ry + 'px';
+  requestAnimationFrame(loop);
+})();
+
+// ─── NAV SHRINK ───
+window.addEventListener('scroll', () => {
+  document.querySelector('nav').style.padding = window.scrollY > 60 ? '13px 60px' : '20px 60px';
+});
+
+// ─── INIT ───
+renderHomeWorks();
+const homeObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('#page-home .reveal').forEach(el => homeObs.observe(el));
+setTimeout(() => {
+  document.querySelectorAll('#page-home [data-w]').forEach(el => { el.style.width = el.dataset.w + '%'; });
+}, 400);
+</script>
+</body>
+</html>
